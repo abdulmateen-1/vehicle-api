@@ -111,10 +111,6 @@ public class CarControllerTest {
      */
     @Test
     public void findCar() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   a vehicle by ID. This should utilize the car from `getCar()` below.
-         */
         mvc.perform(
                 get("/cars/{id}", 1))
                 .andDo(MockMvcResultHandlers.print())
@@ -131,6 +127,18 @@ public class CarControllerTest {
         mvc.perform(delete("/cars/{id}", 1))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(204));
+    }
+
+    @Test
+    public void updateCar() throws Exception {
+        Car car = getUpdateCar();
+        mvc.perform(
+                put(new URI("/cars/1"))
+                .content(json.write(car).getJson())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
     }
 
     /**
@@ -155,6 +163,18 @@ public class CarControllerTest {
         details.setNumberOfDoors(4);
         car.setDetails(details);
         car.setCondition(Condition.USED);
+        return car;
+    }
+
+    /**
+     * Creates an example Car object for use in testing.
+     *
+     * @return an example Car object
+     */
+    private Car getUpdateCar() {
+        Car car = getCar();
+        car.setCondition(Condition.NEW);
+        car.setLocation(new Location(50.7828332, 32.45332));
         return car;
     }
 }
